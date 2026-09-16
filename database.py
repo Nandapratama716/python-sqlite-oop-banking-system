@@ -16,6 +16,7 @@ class Database:
     def execute(self, query, params=()):
         self.cursor.execute(query, params)
         self.connection.commit()
+        return self.cursor.lastrowid
 
     def fetchone(self, query, params=()):
         self.cursor.execute(query, params)
@@ -24,3 +25,10 @@ class Database:
     def fetchall(self, query, params=()):
         self.cursor.execute(query, params)
         return self.cursor.fetchall()
+
+    def initialize(self, schema_file="schema.sql"):
+        with open(schema_file, "r") as file:
+            schema = file.read()
+
+        self.connection.executescript(schema)
+        self.connection.commit()
